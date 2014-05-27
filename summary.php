@@ -32,14 +32,48 @@ if($pdo)
       print_r($row);
    }
 }
-//visa formulär
-?>
-<div>
-	<form action="summary.php" method="POST">
-		Ny sammanfattning: <input type="text" name="ämnen"><br>
-		Nytt ämne: <input type="checkbox" name="ämne">
-		<input type="submit" name="Submit" method="POST">
-	<form>
+
+
+
+
+//visa ämnen
+foreach ($pdo->query("SELECT * FROM subjects ORDER BY name") as $row) 
+	{
+		echo "<div><a href=\"summaries.php?subject_id={$row['id']}\">{$row['name']}</a></div>";
+	}
+//visa summaries
+	echo "<h2>Alla Sammanfattningar:</h2>";
+foreach($pdo->query("SELECT * FROM summaries ORDER BY title DESC") as $row)
+	{
+		echo "<li><a href=\"\">{$row['title']}, Skapare: {$row['user_id']} ({$row['date']})</a></li>";
+	}
+
+
+foreach ($pdo->query("SELECT summaries.*,users.id AS name FROM users 
+	JOIN users ON users.users_id=summaries.user_id ORDER BY date") as $row)
+{
+	echo "<p>{$row['date']} by {$row['user_name']} <br />
+		{$row['post']}</p>";
+}
+
+foreach ($pdo->query("SELECT posts.*,users.name AS user_name FROM posts 
+		JOIN users ON users.id=posts.user_id ORDER BY date") as $row)
+
+
+
+
+
+
+
+
+
+ ?>
+ <!--visa formulär-->
+<div id="container">
+<form action="add_summary.php" method="POST">
+	<input type="submit" value="Skriv Sammanfattning" />
+<form>
+
 </div>
 <php
 
