@@ -12,10 +12,8 @@ $host = "localhost";
 $dbname = "summaries";
 $username = "summaries";
 $password = "10";
-
 $dsn = "mysql:host=$host;dbname=$dbname";
 $attr = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC);
-
 $pdo = new PDO($dsn, $username, $password, $attr);
 ?> 
 
@@ -24,7 +22,7 @@ $pdo = new PDO($dsn, $username, $password, $attr);
 		<legend>Skriv Sammanfattning</legend>
 
 	<p>	<label for="user_id">Användare:</label>
-		<select name="users">
+		<select name="user_id">
 			<?php
 				foreach ($pdo->query("SELECT * FROM users ORDER BY name") as $row)
 				{
@@ -33,7 +31,7 @@ $pdo = new PDO($dsn, $username, $password, $attr);
 			?> </select> </br>
 	</p>
 	<p>	<label for="subject_id">Ämne: </label>
-		<select name="subjects">
+		<select name="subject_id">
 			<?php
 				foreach ($pdo->query("SELECT * FROM subjects ORDER BY name") as $row)
 				{
@@ -46,38 +44,36 @@ $pdo = new PDO($dsn, $username, $password, $attr);
 		<input type="text" name="title" /></br>
 	</p>
 	<p>	<label for="content">Sammanfattning: </label>
-		<input type="text" name="post" />
+		<input type="text" name="content" />
 	</p>
 		<input type="submit" value="Tillägg" />
-<form>
+</form>
+</div>
 <?php
 // har något postats? isf skriv till databasen
-if (!empty($_POST)) {
-	$_POST = null;
+
+
+if(!empty($_POST))
+{
+	if($_POST['user_id'] !=="" && $_POST['subject_id'] !=="" && $_POST['title'] !=="" && $_POST['content'] !=="");
+{
 	$user_id = filter_input(INPUT_POST, 'user_id');
-	$content = filter_input(INPUT_POST, 'content');
 	$subject_id = filter_input(INPUT_POST, 'subject_id');
 	$title = filter_input(INPUT_POST, 'title');
-
-	$statement = $pdo-> prepare("INSERT INTO summary (date, user_id, subject_id, title, content,) VALUES (NOW(), :user_id, :subject_id, :title, :content)");
+	$content = filter_input(INPUT_POST, 'content');
+	$statement = $pdo->prepare("INSERT INTO summaries (user_id, date, subject_id,  title, content) VALUES (:user_id, NOW(), :subject_id,  :title, :content)");
 	$statement->bindParam(":user_id", $user_id);
 	$statement->bindParam(":subject_id", $subject_id);
 	$statement->bindParam(":title", $title);
 	$statement->bindParam(":content", $content);
-	$statement->execute();
-
-
-
-
-	echo "<ul>";
-	foreach($pdo->query("SELECT * FROM summaries ORDER BY id DESC") as $row)
-	{
-		echo "<li><a href=\"\">{$row['title']}, av {$row['user_id']} ({$row['content']})</a></li>";
-	}
-	echo "</ul>";
+	if(!$statement->execute())
+				print_r($statement->errorInfo());
+}
 }
 
+
+
 ?>
-</div>
+
 </body>
 </html>

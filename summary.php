@@ -70,10 +70,13 @@ foreach ($pdo->query("SELECT posts.*,users.name AS user_name FROM posts
  ?>
  <!--visa formulär-->
 <div id="container">
-<form action="add_summary.php" method="POST">
-	<input type="submit" value="Skriv Sammanfattning" />
-<form>
+<form action="show_summaries.php" method="POST">
+	<input type="submit" value="Visa alla Sammanfattningar" />
+</form>
 
+<form action="add_user.php" method="POST">
+<input type="submit" value="Tillägg användare" />
+</form>
 </div>
 <php
 
